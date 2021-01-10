@@ -3,6 +3,7 @@ library introduction_screen;
 import 'dart:async';
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:introduction_screen/src/model/page_view_model.dart';
@@ -229,6 +230,7 @@ class IntroductionScreenState extends State<IntroductionScreen> {
     return Scaffold(
       backgroundColor: widget.globalBackgroundColor,
       body: Stack(
+        fit: StackFit.expand,
         children: [
           NotificationListener<ScrollNotification>(
             onNotification: _onScroll,
@@ -241,12 +243,11 @@ class IntroductionScreenState extends State<IntroductionScreen> {
               onPageChanged: widget.onChange,
             ),
           ),
-          Visibility(
-            visible: widget.hideDotsOnLastPage ? !isLastPage : true,
-            child: Positioned(
-              bottom: 16.0,
-              left: 16.0,
-              right: 16.0,
+          AnimatedOpacity(
+            opacity: widget.hideDotsOnLastPage && isLastPage ? 0.0 : 1.0,
+            duration: const Duration(milliseconds: 300),
+            child: Align(
+              alignment: Alignment.bottomCenter,
               child: SafeArea(
                 child: Row(
                   children: [
@@ -258,18 +259,16 @@ class IntroductionScreenState extends State<IntroductionScreen> {
                     ),
                     Expanded(
                       flex: widget.dotsFlex,
-                      child: Center(
-                        child: widget.isProgress
-                            ? DotsIndicator(
-                                dotsCount: widget.pages.length,
-                                position: _currentPage,
-                                decorator: widget.dotsDecorator,
-                                onTap: widget.isProgressTap && !widget.freeze
-                                    ? (pos) => animateScroll(pos.toInt())
-                                    : null,
-                              )
-                            : const SizedBox(),
-                      ),
+                      child: widget.isProgress
+                          ? DotsIndicator(
+                              dotsCount: widget.pages.length,
+                              position: _currentPage,
+                              decorator: widget.dotsDecorator,
+                              onTap: widget.isProgressTap && !widget.freeze
+                                  ? (pos) => animateScroll(pos.toInt())
+                                  : null,
+                            )
+                          : const SizedBox(),
                     ),
                     Expanded(
                       flex: widget.nextFlex,
