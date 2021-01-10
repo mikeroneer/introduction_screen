@@ -229,26 +229,26 @@ class IntroductionScreenState extends State<IntroductionScreen> {
 
     return Scaffold(
       backgroundColor: widget.globalBackgroundColor,
-      body: Stack(
-        fit: StackFit.expand,
-        children: [
-          NotificationListener<ScrollNotification>(
-            onNotification: _onScroll,
-            child: PageView(
-              controller: _pageController,
-              physics: widget.freeze
-                  ? const NeverScrollableScrollPhysics()
-                  : const BouncingScrollPhysics(),
-              children: widget.pages.map((p) => IntroPage(page: p)).toList(),
-              onPageChanged: widget.onChange,
+      body: SafeArea(
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            NotificationListener<ScrollNotification>(
+              onNotification: _onScroll,
+              child: PageView(
+                controller: _pageController,
+                physics: widget.freeze
+                    ? const NeverScrollableScrollPhysics()
+                    : const BouncingScrollPhysics(),
+                children: widget.pages.map((p) => IntroPage(page: p)).toList(),
+                onPageChanged: widget.onChange,
+              ),
             ),
-          ),
-          AnimatedOpacity(
-            opacity: widget.hideDotsOnLastPage && isLastPage ? 0.0 : 1.0,
-            duration: const Duration(milliseconds: 300),
-            child: Align(
-              alignment: Alignment.bottomCenter,
-              child: SafeArea(
+            AnimatedOpacity(
+              opacity: widget.hideDotsOnLastPage && isLastPage ? 0.0 : 1.0,
+              duration: const Duration(milliseconds: 300),
+              child: Align(
+                alignment: Alignment.bottomCenter,
                 child: Row(
                   children: [
                     Expanded(
@@ -282,8 +282,8 @@ class IntroductionScreenState extends State<IntroductionScreen> {
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
