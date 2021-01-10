@@ -104,6 +104,8 @@ class IntroductionScreen extends StatefulWidget {
   /// Color of done button
   final Color doneColor;
 
+  final bool hideDotsOnLastPage;
+
 
   const IntroductionScreen({
     Key key,
@@ -130,7 +132,8 @@ class IntroductionScreen extends StatefulWidget {
     this.color,
     this.skipColor,
     this.nextColor,
-    this.doneColor
+    this.doneColor,
+    this.hideDotsOnLastPage = false
   })  : assert(pages != null),
         assert(
           pages.length > 0,
@@ -238,43 +241,46 @@ class IntroductionScreenState extends State<IntroductionScreen> {
               onPageChanged: widget.onChange,
             ),
           ),
-          Positioned(
-            bottom: 16.0,
-            left: 16.0,
-            right: 16.0,
-            child: SafeArea(
-              child: Row(
-                children: [
-                  Expanded(
-                    flex: widget.skipFlex,
-                    child: isSkipBtn
-                        ? skipBtn
-                        : Opacity(opacity: 0.0, child: skipBtn),
-                  ),
-                  Expanded(
-                    flex: widget.dotsFlex,
-                    child: Center(
-                      child: widget.isProgress
-                          ? DotsIndicator(
-                              dotsCount: widget.pages.length,
-                              position: _currentPage,
-                              decorator: widget.dotsDecorator,
-                              onTap: widget.isProgressTap && !widget.freeze
-                                  ? (pos) => animateScroll(pos.toInt())
-                                  : null,
-                            )
-                          : const SizedBox(),
+          Visibility(
+            visible: widget.hideDotsOnLastPage ? !isLastPage : true,
+            child: Positioned(
+              bottom: 16.0,
+              left: 16.0,
+              right: 16.0,
+              child: SafeArea(
+                child: Row(
+                  children: [
+                    Expanded(
+                      flex: widget.skipFlex,
+                      child: isSkipBtn
+                          ? skipBtn
+                          : Opacity(opacity: 0.0, child: skipBtn),
                     ),
-                  ),
-                  Expanded(
-                    flex: widget.nextFlex,
-                    child: isLastPage
-                        ? doneBtn
-                        : widget.showNextButton
-                            ? nextBtn
-                            : Opacity(opacity: 0.0, child: nextBtn),
-                  ),
-                ],
+                    Expanded(
+                      flex: widget.dotsFlex,
+                      child: Center(
+                        child: widget.isProgress
+                            ? DotsIndicator(
+                                dotsCount: widget.pages.length,
+                                position: _currentPage,
+                                decorator: widget.dotsDecorator,
+                                onTap: widget.isProgressTap && !widget.freeze
+                                    ? (pos) => animateScroll(pos.toInt())
+                                    : null,
+                              )
+                            : const SizedBox(),
+                      ),
+                    ),
+                    Expanded(
+                      flex: widget.nextFlex,
+                      child: isLastPage
+                          ? doneBtn
+                          : widget.showNextButton
+                              ? nextBtn
+                              : Opacity(opacity: 0.0, child: nextBtn),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
